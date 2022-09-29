@@ -28,23 +28,7 @@ class Post
     }
     public static function all()
     {
-//        $posts = [];
-//        $files = collect(File::files(resource_path("posts")));
-//        foreach ($files as $file) {
-//            $document = YamlFrontMatter::parseFile($file);
-////        dd($document);
-//            $posts[] = new Post(
-//                $document->matter('title'),
-//                $document->excerpt,
-//                $document->date,
-//                $document->body(),
-//                $document->slug);
-//            dd($posts);
-//        }
-//
-//        return $posts;
-
-        collect(File::files(resource_path('posts')))
+        return collect(File::files(resource_path('posts')))
             ->map(fn($file) => YamlFrontMatter::parseFile($file))
             ->map(fn($document) => new Post(
                 $document->title,
@@ -53,6 +37,6 @@ class Post
                 $document->body(),
                 $document->slug
             )
-        ));
+        );
     }
 }
