@@ -2,7 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Models\Post;
-
+use App\Models\Category;
+use App\Models\User;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -15,13 +16,30 @@ use App\Models\Post;
 */
 
 Route::get('/', function () {
+
+    \Illuminate\Support\Facades\DB::listen(function($query){
+        logger($query->sql);
+    });
+
     return view('posts',[
-        'posts' => Post::all()
+        'posts' => Post::latest()->get()
     ]);
 });
 
-Route::get('post/{post}', function($slug){
+Route::get('post/{post:slug}', function(Post $post){
   return view('post',[
-      'post'=>Post::find($slug)
+      'post'=> $post
   ]);
-})->where('post', '[A-z_\-]+');
+});
+
+Route::get('categories/{category:slug}',function(Category $category){
+   return view('posts', [
+       'posts' => $category->posts
+   ]);
+});
+
+Route::get('authors/{author:username}',function(User $author){
+    return view('posts', [
+        'posts' => $author->posts
+    ]);
+});
